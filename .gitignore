@@ -1,0 +1,7 @@
+/build/
+/.waf3-?.*.*-*/
+/.waf-?.*.*-*/
+/waf3-?.*.*-*/
+/waf-?.*.*-*/
+/.lock-waf*build
+__pycache__/

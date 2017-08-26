@@ -1,0 +1,17 @@
+manifest_version: 2
+
+name: Godville Naval Reporter
+description: __MSG_appDesc__
+author: __MSG_author__
+default_locale: ru
+version: 0.1.0
+homepage_url: http://localhost:8000
+
+content_scripts:
+- js: [js/main.js]
+  matches:
+  - https://godville.net/superhero*
+  - https://godvillegame.com/superhero*
+
+icons:
+  '64': img/icon64.png
