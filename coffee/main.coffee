@@ -63,9 +63,9 @@ timer = every 300, ->
     form.enctype = "multipart/form-data"
     form.acceptCharset = "utf-8"
     form.target = winName
-    form.innerHTML = [
+    form.innerHTML = (
         "<input type='hidden' name='#{name}' />" for name in ["id", "turn", "allies", "map", "log"]
-    ].join("")
+    ).join("")
 
     heroBlock = doc.getElementById "hero_block"
     heroBlock.insertAdjacentHTML "afterbegin",

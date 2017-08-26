@@ -74,18 +74,16 @@ timer = every(300, function() {
   form.enctype = "multipart/form-data";
   form.acceptCharset = "utf-8";
   form.target = winName;
-  form.innerHTML = [
-    (function() {
-      var i, len, ref, results;
-      ref = ["id", "turn", "allies", "map", "log"];
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        name = ref[i];
-        results.push("<input type='hidden' name='" + name + "' />");
-      }
-      return results;
-    })()
-  ].join("");
+  form.innerHTML = ((function() {
+    var i, len, ref, results;
+    ref = ["id", "turn", "allies", "map", "log"];
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      name = ref[i];
+      results.push("<input type='hidden' name='" + name + "' />");
+    }
+    return results;
+  })()).join("");
   heroBlock = doc.getElementById("hero_block");
   heroBlock.insertAdjacentHTML("afterbegin", '<div style="text-align: center;"><a href="#" target="_blank">Транслировать</a></div>');
   streamingLink = heroBlock.firstChild.firstChild;
