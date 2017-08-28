@@ -3,8 +3,7 @@ winName = "naval-reporter-win"
 
 doc = document
 body = doc.body
-id = form = null
-# godName = null
+form = null
 
 
 every = (ms, action) ->
@@ -12,7 +11,7 @@ every = (ms, action) ->
 
 
 getLastSegment = (url) ->
-    url.match(/\/[^\/]*$/)[0][1..]
+    url.match(/\/([^\/])*?(?:#.*)?$/)[1]
 
 
 getTurn = ->
@@ -26,8 +25,6 @@ getHTML = (id) ->
 
 
 collectData = ->
-    id: id
-    # name: godName
     turn: getTurn()
     allies: getHTML "alls"
     map: getHTML "s_map"
@@ -35,10 +32,10 @@ collectData = ->
 
 
 sendData = (data) ->
-    input.value = data[input.name] for input in form.children
+    input.value = value for input in form.children when (value = data[input.name])?
 
     open "about:blank", winName,
-        "toolbar=no,scrollbars=no,location=no,status=no,menubar=no,resizable=no,height=90,width=400"
+        "toolbar=no,scrollbars=no,location=no,status=no,menubar=no,resizable=no,height=150,width=243"
     body.appendChild form
     form.submit()
     body.removeChild form
@@ -46,15 +43,10 @@ sendData = (data) ->
 
 timer = every 300, ->
     # Wait until the page is loaded.
-    return if !doc.getElementById("hero_columns")?
+    return unless doc.getElementById("hero_columns")?
     clearInterval timer
 
-    return if !doc.getElementById("s_map")? # Test whether we are sailing.
-
-    id = getLastSegment doc.getElementById("fbclink").href
-    # e = doc.querySelector "#hk_name .l_val a"
-    # godName = decodeURIComponent getLastSegment e.href
-    # heroName = e.text
+    return unless doc.getElementById("s_map")? # Test whether we are sailing.
 
     # Inject the form and streaming link.
     form = doc.createElement "form"
@@ -63,8 +55,10 @@ timer = every 300, ->
     form.enctype = "multipart/form-data"
     form.acceptCharset = "utf-8"
     form.target = winName
-    form.innerHTML = (
-        "<input type='hidden' name='#{name}' />" for name in ["id", "turn", "allies", "map", "log"]
+    local = "#{location.protocol}//#{location.host}"
+    local += doc.getElementById("fbclink").href.replace /^(?:\w*:\/\/)?[^\/]*/, ""
+    form.innerHTML = "<input type='hidden' name='link' value='#{local}' />" + (
+        "<input type='hidden' name='#{name}' />" for name in ["turn", "allies", "map", "log"]
     ).join("")
 
     heroBlock = doc.getElementById "hero_block"
@@ -73,7 +67,7 @@ timer = every 300, ->
     streamingLink = heroBlock.firstChild.firstChild
     streamingLink.onclick = ->
         streamingLink.text = "Идёт трансляция"
-        streamingLink.href = "#{host}/duels/log/#{id}"
+        streamingLink.href = "#{host}/duels/log/#{getLastSegment local}"
         streamingLink.onclick = null
 
         data = collectData()
