@@ -1,5 +1,5 @@
 host = "http://localhost:8000"
-winName = "naval-reporter-win"
+winName = "gv-reporter-win"
 
 doc = document
 body = doc.body

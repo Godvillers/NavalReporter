@@ -1,4 +1,4 @@
-APPNAME = "gvnavalrep"
+APPNAME = "gvrep"
 VERSION = "0.1.0"
 
 

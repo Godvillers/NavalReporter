@@ -3,7 +3,7 @@ var body, collectData, doc, every, form, getHTML, getLastSegment, getTurn, host,
 
 host = "http://localhost:8000";
 
-winName = "naval-reporter-win";
+winName = "gv-reporter-win";
 
 doc = document;
 

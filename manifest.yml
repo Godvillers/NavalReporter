@@ -1,6 +1,6 @@
 manifest_version: 2
 
-name: Godville Naval Reporter
+name: Godville Reporter
 description: __MSG_appDesc__
 author: __MSG_author__
 default_locale: ru
