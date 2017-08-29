@@ -11,7 +11,7 @@ every = (ms, action) ->
 
 
 getLastSegment = (url) ->
-    url.match(/\/([^\/])*?(?:#.*)?$/)[1]
+    url.match(/\/([^\/]*?)(?:#.*)?$/)[1]
 
 
 getTurn = ->

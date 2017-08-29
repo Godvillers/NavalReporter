@@ -16,7 +16,7 @@ every = function(ms, action) {
 };
 
 getLastSegment = function(url) {
-  return url.match(/\/([^\/])*?(?:#.*)?$/)[1];
+  return url.match(/\/([^\/]*?)(?:#.*)?$/)[1];
 };
 
 getTurn = function() {
