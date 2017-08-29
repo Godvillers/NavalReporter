@@ -13,10 +13,13 @@ def configure(cnf):
 
 def build(bld):
     bld(
+        name="yml2json",
+        features="conv2json",
         source=bld.path.ant_glob("**/*.yml"),
         in_source_tree=True,
     )
     bld(
+        name="coffee",
         rule="${COFFEE} -bco ../js ../coffee",
         source=bld.path.ant_glob("coffee/**/*.coffee"),
     )

@@ -2,17 +2,25 @@ import json
 
 from waflib         import Logs
 from waflib.Task    import Task
-from waflib.TaskGen import extension
+from waflib.TaskGen import feature
 
 import yaml
 
 
-@extension(".yml", ".yaml")
-def convert_yaml_to_json(tgen, node):
-    output = node.change_ext(".json")
-    if getattr(tgen, "in_source_tree", False):
-        output = output.get_src()
-    tgen.create_task("yml2json", node, output)
+@feature("conv2json")
+def convert_yaml_to_json(tgen):
+    in_source_tree = getattr(tgen, "in_source_tree", False)
+    untouched = [ ]
+    for node in tgen.source:
+        if node.suffix() in (".yml", ".yaml"):
+            output = node.change_ext(".json")
+            if in_source_tree:
+                output = output.get_src()
+            tgen.create_task("yml2json", node, output)
+        else:
+            untouched.append(node)
+
+    tgen.source = untouched
 
 
 class yml2json(Task):
