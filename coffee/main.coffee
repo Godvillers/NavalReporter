@@ -1,3 +1,4 @@
+version = "0.1.0"
 host = "http://localhost:8000"
 winName = "gv-reporter-win"
 
@@ -57,9 +58,11 @@ timer = every 300, ->
     form.target = winName
     local = "#{location.protocol}//#{location.host}"
     local += doc.getElementById("fbclink").href.replace /^(?:\w*:\/\/)?[^\/]*/, ""
-    form.innerHTML = "<input type='hidden' name='link' value='#{local}' />" + (
-        "<input type='hidden' name='#{name}' />" for name in ["turn", "allies", "map", "log"]
-    ).join("")
+    form.innerHTML =
+        "<input type='hidden' name='clientVersion' value='#{version}' />" +
+        "<input type='hidden' name='link' value='#{local}' />" + (
+            "<input type='hidden' name='#{name}' />" for name in ["turn", "allies", "map", "log"]
+        ).join("")
 
     heroBlock = doc.getElementById "hero_block"
     heroBlock.insertAdjacentHTML "afterbegin",
