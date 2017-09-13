@@ -18,7 +18,7 @@ every = function(ms, action) {
 };
 
 getLastSegment = function(url) {
-  return url.match(/\/([^\/]*?)(?:#.*)?$/)[1];
+  return url.match(/\/([^\/]*?)(?:\#.*)?$/)[1];
 };
 
 getTurn = function() {
@@ -62,7 +62,7 @@ sendData = function(data) {
 };
 
 timer = every(300, function() {
-  var heroBlock, local, name, streamingLink;
+  var heroBlock, localLink, streamingLink;
   if (doc.getElementById("hero_columns") == null) {
     return;
   }
@@ -76,37 +76,25 @@ timer = every(300, function() {
   form.enctype = "multipart/form-data";
   form.acceptCharset = "utf-8";
   form.target = winName;
-  local = location.protocol + "//" + location.host;
-  local += doc.getElementById("fbclink").href.replace(/^(?:\w*:\/\/)?[^\/]*/, "");
-  form.innerHTML = ("<input type='hidden' name='clientVersion' value='" + version + "' />") + ("<input type='hidden' name='link' value='" + local + "' />") + ((function() {
-    var i, len, ref, results;
-    ref = ["turn", "allies", "map", "log"];
-    results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      name = ref[i];
-      results.push("<input type='hidden' name='" + name + "' />");
-    }
-    return results;
-  })()).join("");
+  localLink = location.protocol + "//" + location.host + (doc.getElementById("fbclink").href.replace(/^(?:\w*:\/\/)?[^\/]*/, ""));
+  form.innerHTML = "<input type=\"hidden\" name=\"clientVersion\" value=\"" + version + "\" /><input type=\"hidden\" name=\"link\" value=\"" + localLink + "\" /><input type=\"hidden\" name=\"turn\" /><input type=\"hidden\" name=\"allies\" /><input type=\"hidden\" name=\"map\" /><input type=\"hidden\" name=\"log\" />";
   heroBlock = doc.getElementById("hero_block");
   heroBlock.insertAdjacentHTML("afterbegin", '<div style="text-align: center;"><a href="#" target="_blank">Транслировать</a></div>');
   streamingLink = heroBlock.firstChild.firstChild;
   return streamingLink.onclick = function() {
     var data, lastTurn;
     streamingLink.text = "Идёт трансляция";
-    streamingLink.href = host + "/duels/log/" + (getLastSegment(local));
+    streamingLink.href = host + "/duels/log/" + (getLastSegment(localLink));
     streamingLink.onclick = null;
     data = collectData();
     lastTurn = data.turn;
     sendData(data);
     every(500, function() {
       var turn;
-      turn = getTurn();
-      if (turn <= lastTurn) {
-        return;
+      if ((turn = getTurn()) > lastTurn) {
+        lastTurn = turn;
+        return sendData(collectData());
       }
-      lastTurn = turn;
-      return sendData(collectData());
     });
     return false;
   };

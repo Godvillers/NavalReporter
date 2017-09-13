@@ -12,7 +12,7 @@ every = (ms, action) ->
 
 
 getLastSegment = (url) ->
-    url.match(/\/([^\/]*?)(?:#.*)?$/)[1]
+    url.match(/// / ([^/]*?) (?:\# .*)? $ ///)[1]
 
 
 getTurn = ->
@@ -36,7 +36,8 @@ sendData = (data) ->
     input.value = value for input in form.children when (value = data[input.name])?
 
     open "about:blank", winName,
-        "toolbar=no,scrollbars=no,location=no,status=no,menubar=no,resizable=no,height=150,width=243"
+        "toolbar=no,scrollbars=no,location=no,status=no,menubar=no,\
+        resizable=no,height=150,width=243"
     body.appendChild form
     form.submit()
     body.removeChild form
@@ -56,13 +57,20 @@ timer = every 300, ->
     form.enctype = "multipart/form-data"
     form.acceptCharset = "utf-8"
     form.target = winName
-    local = "#{location.protocol}//#{location.host}"
-    local += doc.getElementById("fbclink").href.replace /^(?:\w*:\/\/)?[^\/]*/, ""
+    localLink =
+        """
+        #{location.protocol}//#{location.host}\
+        #{doc.getElementById("fbclink").href.replace /// ^ (?:\w* ://)? [^/]* ///, ""}
+        """
     form.innerHTML =
-        "<input type='hidden' name='clientVersion' value='#{version}' />" +
-        "<input type='hidden' name='link' value='#{local}' />" + (
-            "<input type='hidden' name='#{name}' />" for name in ["turn", "allies", "map", "log"]
-        ).join("")
+        """
+        <input type="hidden" name="clientVersion" value="#{version}" />\
+        <input type="hidden" name="link" value="#{localLink}" />\
+        <input type="hidden" name="turn" />\
+        <input type="hidden" name="allies" />\
+        <input type="hidden" name="map" />\
+        <input type="hidden" name="log" />\
+        """
 
     heroBlock = doc.getElementById "hero_block"
     heroBlock.insertAdjacentHTML "afterbegin",
@@ -70,16 +78,15 @@ timer = every 300, ->
     streamingLink = heroBlock.firstChild.firstChild
     streamingLink.onclick = ->
         streamingLink.text = "Идёт трансляция"
-        streamingLink.href = "#{host}/duels/log/#{getLastSegment local}"
+        streamingLink.href = "#{host}/duels/log/#{getLastSegment localLink}"
         streamingLink.onclick = null
 
         data = collectData()
         lastTurn = data.turn
         sendData data
         every 500, ->
-            turn = getTurn()
-            return if turn <= lastTurn
-            lastTurn = turn
-            sendData collectData()
+            if (turn = getTurn()) > lastTurn
+                lastTurn = turn
+                sendData collectData()
 
         false
