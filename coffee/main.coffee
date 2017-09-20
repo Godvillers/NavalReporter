@@ -1,4 +1,4 @@
-version = "0.1.0"
+agent = "GVReporter/0.1.0"
 host = "http://localhost:8000"
 winName = "gv-reporter-win"
 
@@ -64,7 +64,7 @@ timer = every 300, ->
         """
     form.innerHTML =
         """
-        <input type="hidden" name="clientVersion" value="#{version}" />\
+        <input type="hidden" name="agent" value="#{agent}" />\
         <input type="hidden" name="link" value="#{localLink}" />\
         <input type="hidden" name="turn" />\
         <input type="hidden" name="allies" />\
