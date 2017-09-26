@@ -1,3 +1,5 @@
+"use strict"
+
 agent = "GVReporter/0.1.0"
 host = "http://localhost:8000"
 winName = "gv-reporter-win"
