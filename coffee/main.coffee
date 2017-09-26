@@ -22,16 +22,22 @@ getTurn = ->
     catch then 0
 
 
+getCargo = ->
+    try doc.querySelector("#hk_cargo .l_val").text
+    catch then ""
+
+
 getHTML = (id) ->
     try doc.getElementById(id).outerHTML
     catch then ""
 
 
 collectData = ->
-    turn: getTurn()
-    allies: getHTML "alls"
-    map: getHTML "s_map"
-    log: getHTML "m_fight_log"
+    turn:      getTurn()
+    cargo:     getCargo()
+    allies:    getHTML "alls"
+    map:       getHTML "s_map"
+    log:       getHTML "m_fight_log"
 
 
 sendData = (data) ->
@@ -69,6 +75,7 @@ timer = every 300, ->
         <input type="hidden" name="agent" value="#{agent}" />\
         <input type="hidden" name="link" value="#{localLink}" />\
         <input type="hidden" name="turn" />\
+        <input type="hidden" name="cargo" />\
         <input type="hidden" name="allies" />\
         <input type="hidden" name="map" />\
         <input type="hidden" name="log" />\
