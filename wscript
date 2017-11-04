@@ -8,7 +8,7 @@ def options(opt):
 
 def configure(cnf):
     cnf.load("yml2json", tooldir="waftools")
-    cnf.find_program("coffee", var="COFFEE")
+    cnf.find_program("lsc", var="LSC")
 
 
 def build(bld):
@@ -19,9 +19,9 @@ def build(bld):
         in_source_tree=True,
     )
     bld(
-        name="coffee",
-        rule="${COFFEE} -bco ../js ../coffee",
-        source=bld.path.ant_glob("coffee/**/*.coffee"),
+        name="livescript",
+        rule="${LSC} -bco ../js ../live",
+        source=bld.path.ant_glob("live/**/*.ls"),
     )
 
 
