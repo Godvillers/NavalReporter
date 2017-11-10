@@ -14,7 +14,7 @@ getLastSegment = function(url){
 getTurn = function(){
   var e;
   try {
-    return +/\d+/.exec(document.querySelector('#m_fight_log .block_h .block_title').text)[0];
+    return +/\d+/.exec(document.querySelector('#m_fight_log .block_h .block_title').textContent)[0];
   } catch (e$) {
     e = e$;
     return 0;
@@ -23,7 +23,7 @@ getTurn = function(){
 getCargo = function(){
   var e;
   try {
-    return document.querySelector('#hk_cargo .l_val').text;
+    return document.querySelector('#hk_cargo .l_val').textContent;
   } catch (e$) {
     e = e$;
     return "";
@@ -82,7 +82,7 @@ timer = every(300, function(){
   streamingLink = heroBlock.firstChild.firstChild;
   streamingLink.onclick = function(){
     var data, lastTurn;
-    streamingLink.text = "Идёт трансляция";
+    streamingLink.data = "Идёт трансляция";
     streamingLink.href = host + "/duels/log/" + getLastSegment(localLink);
     streamingLink.onclick = null;
     data = collectData();

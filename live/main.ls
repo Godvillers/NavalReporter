@@ -16,12 +16,12 @@ getLastSegment = (url) ->
 
 
 getTurn = ->
-    try +/\d+/.exec(document.querySelector '#m_fight_log .block_h .block_title' .text).0
+    try +/\d+/.exec(document.querySelector '#m_fight_log .block_h .block_title' .textContent).0
     catch => 0
 
 
 getCargo = ->
-    try document.querySelector '#hk_cargo .l_val' .text
+    try document.querySelector '#hk_cargo .l_val' .textContent
     catch => ""
 
 
@@ -88,7 +88,7 @@ timer = every 300, !->
         "
     streamingLink = heroBlock.firstChild.firstChild
     streamingLink.onclick = ->
-        streamingLink.text = "Идёт трансляция"
+        streamingLink.data = "Идёт трансляция"
         streamingLink.href = "#{host}/duels/log/#{getLastSegment localLink}"
         streamingLink.onclick = null
 
