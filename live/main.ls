@@ -88,7 +88,7 @@ timer = every 300, !->
         "
     streamingLink = heroBlock.firstChild.firstChild
     streamingLink.onclick = ->
-        streamingLink.data = "Идёт трансляция"
+        streamingLink.textContent = "Идёт трансляция"
         streamingLink.href = "#{host}/duels/log/#{getLastSegment localLink}"
         streamingLink.onclick = null
 

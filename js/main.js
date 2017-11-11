@@ -82,7 +82,7 @@ timer = every(300, function(){
   streamingLink = heroBlock.firstChild.firstChild;
   streamingLink.onclick = function(){
     var data, lastTurn;
-    streamingLink.data = "Идёт трансляция";
+    streamingLink.textContent = "Идёт трансляция";
     streamingLink.href = host + "/duels/log/" + getLastSegment(localLink);
     streamingLink.onclick = null;
     data = collectData();
