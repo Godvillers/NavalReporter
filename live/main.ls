@@ -7,6 +7,10 @@ const winName = \gv-reporter-win
 form = null
 
 
+$id = -> document.getElementById it
+$q  = -> document.querySelector  it
+
+
 every = (ms, action) ->
     setInterval action, ms
 
@@ -24,17 +28,17 @@ getLastSegment = (url) ->
 
 
 getTurn = ->
-    try +/\d+/.exec(document.querySelector '#m_fight_log .block_h .block_title' .textContent).0
+    try +/\d+/.exec($q '#m_fight_log .block_h .block_title' .textContent).0
     catch => 0
 
 
 getCargo = ->
-    try document.querySelector '#hk_cargo .l_val' .textContent
+    try $q '#hk_cargo .l_val' .textContent
     catch => ""
 
 
 getHTML = (id) ->
-    try document.getElementById id .outerHTML
+    try $id id .outerHTML
     catch => ""
 
 
@@ -59,10 +63,10 @@ sendData = (data) !->
 
 timer = every 300, !->
     # Wait until the page is loaded.
-    return unless document.getElementById(\hero_columns)? && window.pako? && window.base64js?
+    return unless $id(\hero_columns)? && window.pako? && window.base64js?
     clearInterval timer
 
-    return unless document.getElementById(\s_map)? # Test whether we are sailing.
+    return unless $id(\s_map)? # Test whether we are sailing.
 
     # Inject the form and streaming link.
     form := document.createElement \form
@@ -75,7 +79,7 @@ timer = every 300, !->
     localLink =
         "
         #{location.protocol}//#{location.host}
-        #{document.getElementById \fbclink .href.replace // ^ (?:\w* :\//)? [^/]* //, ""}
+        #{$id \fbclink .href.replace // ^ (?:\w* :\//)? [^/]* //, ""}
         "
     form.innerHTML =
         "
@@ -86,7 +90,7 @@ timer = every 300, !->
         <input type='hidden' name='data' />
         "
 
-    heroBlock = document.getElementById \hero_block
+    heroBlock = $id \hero_block
     heroBlock.insertAdjacentHTML \afterbegin,
         "
         <div style='text-align: center;'>
