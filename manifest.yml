@@ -8,7 +8,10 @@ version: 0.1.0
 homepage_url: http://localhost:8000
 
 content_scripts:
-- js: [js/main.js]
+- js:
+  - js/main.js
+  - vendor/base64.min.js
+  - vendor/pako_deflate.min.js
   matches:
   - https://godville.net/superhero*
   - https://godvillegame.com/superhero*

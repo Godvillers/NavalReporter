@@ -28,8 +28,9 @@ def build(bld):
 def dist(dst):
     dst.files = dst.path.ant_glob("""
         img/
-        js/
+        js/**/*.js
         _locales/**/*.json
+        vendor/**/*.js
         LICENSE
         manifest.json
     """)

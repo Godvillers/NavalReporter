@@ -1,1 +1,2 @@
-*.json linguist-generated
+*.json linguist-generated -diff
+/waf -diff

@@ -11,6 +11,14 @@ every = (ms, action) ->
     setInterval action, ms
 
 
+timeIt = (title, action) ->
+    console.time title
+    try
+        action()
+    finally
+        console.timeEnd title
+
+
 getLastSegment = (url) ->
     // / ([^/]*?) (?:\# .*)? $ //.exec(url).1
 
@@ -31,11 +39,10 @@ getHTML = (id) ->
 
 
 collectData = ->
-    turn:   getTurn()
-    cargo:  getCargo()
-    allies: getHTML \alls
-    map:    getHTML \s_map
-    log:    getHTML \m_fight_log
+    <- timeIt "Collected"
+    turn:  getTurn()
+    cargo: getCargo()
+    data:  base64js.fromByteArray pako.deflate [\alls \s_map \m_fight_log].map(getHTML).join "<&>"
 
 
 sendData = (data) !->
@@ -45,13 +52,14 @@ sendData = (data) !->
         "toolbar=no,scrollbars=no,location=no,status=no,menubar=no,
         resizable=no,height=150,width=243"
     document.body.appendChild form
-    form.submit()
+    timeIt "Transferred", !->
+        form.submit()
     document.body.removeChild form
 
 
 timer = every 300, !->
     # Wait until the page is loaded.
-    return unless document.getElementById(\hero_columns)?
+    return unless document.getElementById(\hero_columns)? && window.pako? && window.base64js?
     clearInterval timer
 
     return unless document.getElementById(\s_map)? # Test whether we are sailing.
@@ -63,6 +71,7 @@ timer = every 300, !->
     form.enctype = "multipart/form-data"
     form.acceptCharset = \utf-8
     form.target = winName
+    form.style.display = \none
     localLink =
         "
         #{location.protocol}//#{location.host}
@@ -74,9 +83,7 @@ timer = every 300, !->
         <input type='hidden' name='link' value='#{localLink}' />
         <input type='hidden' name='turn' />
         <input type='hidden' name='cargo' />
-        <input type='hidden' name='allies' />
-        <input type='hidden' name='map' />
-        <input type='hidden' name='log' />
+        <input type='hidden' name='data' />
         "
 
     heroBlock = document.getElementById \hero_block
