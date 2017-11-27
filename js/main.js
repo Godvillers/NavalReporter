@@ -2,7 +2,7 @@
 "use strict";
 var agent, host, winName, form, $id, $q, every, timeIt, getLastSegment, getTurn, getCargo, getHTML, collectData, sendData, timer;
 agent = "GVReporter/0.1.0";
-host = "http://localhost:8000";
+host = "https://gv.erinome.net/reporter";
 winName = 'gv-reporter-win';
 form = null;
 $id = function(it){

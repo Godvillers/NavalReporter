@@ -1,7 +1,7 @@
 "use strict"
 
 const agent = "GVReporter/0.1.0"
-const host = "http://localhost:8000"
+const host = "https://gv.erinome.net/reporter"
 const winName = \gv-reporter-win
 
 form = null
