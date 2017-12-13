@@ -1,6 +1,6 @@
 "use strict"
 
-const agent = "GVReporter/0.1.0"
+const agent = "GVReporter/1.0.0"
 const host = "https://gv.erinome.net/reporter"
 const winName = \gv-reporter-win
 
@@ -18,7 +18,7 @@ every = (ms, action) ->
 timeIt = (title, action) ->
     console.time title
     try
-        action()
+        action!
     finally
         console.timeEnd title
 
@@ -27,7 +27,7 @@ getLastSegment = (url) ->
     // / ([^/]*?) (?:\# .*)? $ //.exec(url).1
 
 
-getTurn = ->
+getStep = ->
     try +/\d+/.exec($q '#m_fight_log .block_h .block_title' .textContent).0
     catch => 0
 
@@ -44,8 +44,8 @@ getHTML = (id) ->
 
 collectData = ->
     <- timeIt "Collected"
-    turn:  getTurn()
-    cargo: getCargo()
+    step:  getStep!
+    cargo: getCargo!
     data:  base64js.fromByteArray pako.deflate [\alls \s_map \m_fight_log].map(getHTML).join "<&>"
 
 
@@ -56,8 +56,7 @@ sendData = (data) !->
         "toolbar=no,scrollbars=no,location=no,status=no,menubar=no,
         resizable=no,height=150,width=243"
     document.body.appendChild form
-    timeIt "Transferred", !->
-        form.submit()
+    form.submit!
     document.body.removeChild form
 
 
@@ -83,9 +82,13 @@ timer = every 300, !->
         "
     form.innerHTML =
         "
+        <input type='hidden' name='protocolVersion' value='1' />
         <input type='hidden' name='agent' value='#{agent}' />
         <input type='hidden' name='link' value='#{localLink}' />
-        <input type='hidden' name='turn' />
+        <input type='hidden' name='stepDuration' value='20' />
+        <input type='hidden' name='scale' value='11' />
+        <input type='hidden' name='step' />
+        <input type='hidden' name='playerIndex' value='0' />
         <input type='hidden' name='cargo' />
         <input type='hidden' name='data' />
         "
@@ -103,12 +106,12 @@ timer = every 300, !->
         streamingLink.href = "#{host}/duels/log/#{getLastSegment localLink}"
         streamingLink.onclick = null
 
-        data = collectData()
-        lastTurn = data.turn
+        data = collectData!
+        lastStep = data.step
         sendData data
         every 500, !->
-            if (turn = getTurn()) > lastTurn
-                lastTurn := turn
-                sendData collectData()
+            if (step = getStep!) > lastStep
+                lastStep := step
+                sendData collectData!
 
         false
