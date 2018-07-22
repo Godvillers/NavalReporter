@@ -9,8 +9,8 @@ const encodingType = \multipart/form-data
 const charset = \utf-8
 const winName = \gv-reporter-win
 const requestTemplate =
-    protocolVersion: 2
-    agent:           "GVReporter/1.2.0"
+    protocolVersion: 3
+    agent:           "GVReporter/1.3.0"
     link:            null
     stepDuration:    if location.hostname == \godvillegame.com then 23 else 20
     timezone:        -new Date!getTimezoneOffset!
@@ -18,6 +18,7 @@ const requestTemplate =
     playerNumber:    0 # A smarter client should by some means detect that.
     cargo:           null
     data:            null
+    clientData:      \null
 
 
 $id = -> document.getElementById it
