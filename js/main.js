@@ -9,13 +9,13 @@
   charset = 'utf-8';
   winName = 'gv-reporter-win';
   requestTemplate = {
-    protocolVersion: 1,
-    agent: "GVReporter/1.1.0",
+    protocolVersion: 2,
+    agent: "GVReporter/1.2.0",
     link: null,
     stepDuration: location.hostname === 'godvillegame.com' ? 23 : 20,
-    scale: 11,
+    timezone: -new Date().getTimezoneOffset(),
     step: null,
-    playerIndex: 0,
+    playerNumber: 0,
     cargo: null,
     data: null
   };

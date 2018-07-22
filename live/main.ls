@@ -9,13 +9,13 @@ const encodingType = \multipart/form-data
 const charset = \utf-8
 const winName = \gv-reporter-win
 const requestTemplate =
-    protocolVersion: 1
-    agent:           "GVReporter/1.1.0"
+    protocolVersion: 2
+    agent:           "GVReporter/1.2.0"
     link:            null
     stepDuration:    if location.hostname == \godvillegame.com then 23 else 20
-    scale:           11
+    timezone:        -new Date!getTimezoneOffset!
     step:            null
-    playerIndex:     0 # A smarter client should by some means detect that.
+    playerNumber:    0 # A smarter client should by some means detect that.
     cargo:           null
     data:            null
 
