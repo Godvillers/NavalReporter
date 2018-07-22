@@ -1,18 +1,60 @@
 "use strict"
 
-const agent = "GVReporter/1.0.0"
-const host = "https://gv.erinome.net/reporter"
+const host = \https://gv.erinome.net/reporter
+# https://github.com/Godvillers/ReporterServer/blob/master/docs/api.md
+const apiURL = "#{host}/send"
+# We make requests via an HTML <form>. Another option is sending XHRs from a *background* script.
+const method = \POST
+const encodingType = \multipart/form-data
+const charset = \utf-8
 const winName = \gv-reporter-win
-
-form = null
+const requestTemplate =
+    protocolVersion: 1
+    agent:           "GVReporter/1.1.0"
+    link:            null
+    stepDuration:    if location.hostname == \godvillegame.com then 23 else 20
+    scale:           11
+    step:            null
+    playerIndex:     0 # A smarter client should by some means detect that.
+    cargo:           null
+    data:            null
 
 
 $id = -> document.getElementById it
 $q  = -> document.querySelector  it
 
 
-every = (ms, action) ->
-    setInterval action, ms
+getLocalLink = ->
+    "
+    #{location.protocol}//#{location.host}
+    #{$id \fbclink .href.replace // ^ (?:\w* :\//)? [^/]* //, ""}
+    "
+
+
+getLastSegment = (url) ->
+    // / ([^/]*?) (?:\# .*)? $ //.exec url .1
+
+
+getStreamURL = (localLink) ->
+    "#{host}/duels/log/#{getLastSegment localLink}"
+
+
+createForm = ->
+    form = document.createElement \form
+        ..method = method
+        ..action = apiURL
+        ..enctype = encodingType
+        ..acceptCharset = charset
+        ..target = winName
+        ..style.display = \none
+
+    for key, value of requestTemplate
+        document.createElement \input
+            ..type = \hidden
+            ..name = key
+            ..value = value if value?
+            form.appendChild ..
+    form
 
 
 timeIt = (title, action) ->
@@ -21,10 +63,6 @@ timeIt = (title, action) ->
         action!
     finally
         console.timeEnd title
-
-
-getLastSegment = (url) ->
-    // / ([^/]*?) (?:\# .*)? $ //.exec(url).1
 
 
 getStep = ->
@@ -49,7 +87,7 @@ collectData = ->
     data:  base64js.fromByteArray pako.deflate [\alls \s_map \m_fight_log].map(getHTML).join "<&>"
 
 
-sendData = (data) !->
+sendData = (form, data) !->
     [..value = that if data[..name]? for form.children]
 
     open "about:blank", winName,
@@ -60,7 +98,11 @@ sendData = (data) !->
     document.body.removeChild form
 
 
-timer = every 300, !->
+every = (ms, action) ->
+    setInterval action, ms
+
+
+timer = every 300ms, !->
     # Wait until the page is loaded.
     return unless $id(\hero_columns)? && window.pako? && window.base64js?
     clearInterval timer
@@ -68,31 +110,8 @@ timer = every 300, !->
     return unless $id(\s_map)? # Test whether we are sailing.
 
     # Inject the form and streaming link.
-    form := document.createElement \form
-    form.method = \POST
-    form.action = "#{host}/send"
-    form.enctype = "multipart/form-data"
-    form.acceptCharset = \utf-8
-    form.target = winName
-    form.style.display = \none
-    localLink =
-        "
-        #{location.protocol}//#{location.host}
-        #{$id \fbclink .href.replace // ^ (?:\w* :\//)? [^/]* //, ""}
-        "
-    form.innerHTML =
-        "
-        <input type='hidden' name='protocolVersion' value='1' />
-        <input type='hidden' name='agent' value='#{agent}' />
-        <input type='hidden' name='link' value='#{localLink}' />
-        <input type='hidden' name='stepDuration' value='20' />
-        <input type='hidden' name='scale' value='11' />
-        <input type='hidden' name='step' />
-        <input type='hidden' name='playerIndex' value='0' />
-        <input type='hidden' name='cargo' />
-        <input type='hidden' name='data' />
-        "
-
+    requestTemplate.link = localLink = getLocalLink!
+    form = createForm!
     heroBlock = $id \hero_block
     heroBlock.insertAdjacentHTML \afterbegin,
         "
@@ -102,16 +121,16 @@ timer = every 300, !->
         "
     streamingLink = heroBlock.firstChild.firstChild
     streamingLink.onclick = ->
-        streamingLink.textContent = "Идёт трансляция"
-        streamingLink.href = "#{host}/duels/log/#{getLastSegment localLink}"
-        streamingLink.onclick = null
+        streamingLink
+            ..textContent = "Идёт трансляция"
+            ..href = getStreamURL localLink
+            ..onclick = null
 
         data = collectData!
         lastStep = data.step
-        sendData data
-        every 500, !->
+        sendData form, data
+        every 500ms, !->
             if (step = getStep!) > lastStep
                 lastStep := step
-                sendData collectData!
-
+                sendData form, collectData!
         false

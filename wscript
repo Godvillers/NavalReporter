@@ -20,7 +20,7 @@ def build(bld):
     )
     bld(
         name="livescript",
-        rule="${LSC} -bco ../js ../live",
+        rule="${LSC} -co ../js ../live",
         source=bld.path.ant_glob("live/**/*.ls"),
     )
 
